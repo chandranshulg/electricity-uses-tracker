@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Electricity Usage Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .total-usage {
+            margin-top: 20px;
+            font-size: 1.2em;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Home Electricity Usage Tracker</h1>
+    <div class="container">
+        <h2>Add Appliance</h2>
+        <form id="applianceForm">
+            <label for="applianceName">Appliance Name:</label>
+            <input type="text" id="applianceName" required>
+            
+            <label for="powerConsumption">Power Consumption (Watts):</label>
+            <input type="number" id="powerConsumption" required>
+            
+            <label for="usageTime">Usage Time (Hours/Day):</label>
+            <input type="number" id="usageTime" required>
+            
+            <button type="submit">Add Appliance</button>
+        </form>
+
+        <h2>Appliance List</h2>
+        <table id="applianceTable">
+            <thead>
+                <tr>
+                    <th>Appliance Name</th>
+                    <th>Power Consumption (W)</th>
+                    <th>Usage Time (Hours/Day)</th>
+                    <th>Daily Energy (kWh)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Appliance rows will be added here dynamically -->
+            </tbody>
+        </table>
+
+        <div class="total-usage">
+            Total Daily Usage: <span id="totalUsage">0</span> kWh
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('applianceForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const applianceName = document.getElementById('applianceName').value;
+            const powerConsumption = parseFloat(document.getElementById('powerConsumption').value);
+            const usageTime = parseFloat(document.getElementById('usageTime').value);
+
+            const energyUsage = (powerConsumption * usageTime) / 1000; // kWh
+
+            const table = document.getElementById('applianceTable').getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow();
+
+            const nameCell = newRow.insertCell(0);
+            const powerCell = newRow.insertCell(1);
+            const timeCell = newRow.insertCell(2);
+            const energyCell = newRow.insertCell(3);
+
+            nameCell.textContent = applianceName;
+            powerCell.textContent = powerConsumption;
+            timeCell.textContent = usageTime;
+            energyCell.textContent = energyUsage.toFixed(2);
+
+            updateTotalUsage();
+        });
+
+        function updateTotalUsage() {
+            const table = document.getElementById('applianceTable').getElementsByTagName('tbody')[0];
+            const rows = table.getElementsByTagName('tr');
+            let totalUsage = 0;
+
+            for (let i = 0; i < rows.length; i++) {
+                const energyUsage = parseFloat(rows[i].getElementsByTagName('td')[3].textContent);
+                totalUsage += energyUsage;
+            }
+
+            document.getElementById('totalUsage').textContent = totalUsage.toFixed(2);
+        }
+    </script>
+</body>
+</html>
